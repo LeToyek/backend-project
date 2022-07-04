@@ -18,13 +18,13 @@ const (
 	dbname    = "coin-batam"
 	port      = 5432
 	ssl       = "disable"
-	time      = "Asia/Jakarta"
+	timeZone  = "Asia/Jakarta"
 	localhost = "localhost:5000"
 )
 
 func main() {
 
-	dbInfo := fmt.Sprintf("user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", user, password, dbname, port, ssl, time)
+	dbInfo := fmt.Sprintf("user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", user, password, dbname, port, ssl, timeZone)
 
 	db, err := sql.Open("postgres", dbInfo)
 
@@ -51,6 +51,16 @@ func main() {
 
 	start.StartServer()
 
+	// router.Use(cors.New(cors.Config{
+	// 	AllowOrigins:     []string{"https://localhost:5000/register/"},
+	// 	AllowMethods:     []string{"PUT", "PATCH", "POST"},
+	// 	AllowHeaders:     []string{"Content-Type"},
+	// 	ExposeHeaders:    []string{"Content-Length"},
+	// 	AllowCredentials: true,
+	// 	AllowOriginFunc: func(origin string) bool {
+	// 		return origin == "https://github.com"
+	// 	},
+	// 	MaxAge: 12 * time.Hour,
+	// }))
 	router.Run(localhost)
-
 }

@@ -20,3 +20,13 @@ func (h *Handler) AddUser(c *gin.Context) {
 
 	h.Service.AddUser(user)
 }
+func (h *Handler) Login(c *gin.Context) {
+	var user entities.User
+
+	if err := c.BindJSON(&user); err != nil {
+		panic(err)
+	}
+
+	userId, err := h.Service.UseUser(user.Email, user.Password)
+
+}
