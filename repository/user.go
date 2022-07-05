@@ -10,12 +10,10 @@ import (
 type User interface {
 	AddUser(user entities.User) error
 	UseUser(email string, password string) (string, error)
+	GetUserById(ID string) (entities.User, error)
 }
 
 // GetUsers() ([]entities.User, error)
-// GetUserById(ID string) (entities.User, error)
-// Login(email string, password string) (string, error)
-// }
 
 func (r *Repository) AddUser(user entities.User) error {
 	_, err := r.DB.Exec(
@@ -39,14 +37,29 @@ func (r *Repository) UseUser(email string, password string) (string, error) {
 		&user.Password,
 		&user.User_id,
 	)
-	if err == sql.ErrNoRows {
-		return "", errors.New("email not found")
-	}
-	if password != user.Password {
-		return "", errors.New("wrong password")
+	if err == sql.ErrNoRows || password != user.Password {
+		return "", errors.New("wrong email or password")
 	}
 	if err != nil {
 		return "", errors.New(err.Error())
 	}
 	return user.User_id, err
+}
+func (r *Repository) GetUserById(userID string) (entities.User, error) {
+	var user entities.User
+	row := r.DB.QueryRow(queries.GetUserQ, userID)
+	err := row.Scan(
+		&user.User_id,
+		&user.First_name,
+		&user.Last_name,
+		&user.Email,
+		&user.Password,
+		&user.Phone,
+		&user.Created_at,
+		&user.Updated_at,
+	)
+	if err != nil {
+		return user, errors.New(err.Error())
+	}
+	return user, err
 }

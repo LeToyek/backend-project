@@ -16,6 +16,7 @@ func (s *Server) StartServer() {
 	s.Router.POST("/test", s.Handler.JustTest)
 	s.Router.POST("/register", s.Handler.AddUser)
 	s.Router.POST("/login", s.Handler.Login)
+	s.Router.POST("/dashboard", s.Handler.GetUserById)
 }
 
 func CORSMiddleware() gin.HandlerFunc {

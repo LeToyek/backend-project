@@ -9,4 +9,7 @@ const (
 	FindUserQ = `
 		SELECT email,password,user_id FROM users WHERE email=$1;
 	`
+	GetUserQ = `
+		SELECT * FROM users WHERE user_id=$1
+	`
 )

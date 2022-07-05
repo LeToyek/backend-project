@@ -30,11 +30,35 @@ func (h *Handler) Login(c *gin.Context) {
 	userId, err := h.Service.UseUser(user.Email, user.Password)
 
 	if err != nil {
-		panic(err.Error())
+		c.IndentedJSON(http.StatusNotFound, gin.H{
+			"statusError": true,
+			"message":     err.Error(),
+		})
+		return
 	}
 	token, expirationTime := GenerateAllTokens(userId)
 	c.IndentedJSON(http.StatusOK, gin.H{
-		"token":   token,
-		"expired": expirationTime,
+		"statusError": false,
+		"token":       token,
+		"expired":     expirationTime,
 	})
+}
+func (h *Handler) GetUserById(c *gin.Context) {
+	claims, err := ValidateToken(c)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadGateway, gin.H{
+			"statusError": true,
+			"message":     err.Error(),
+		})
+		return
+	}
+	user, err := h.Service.GetUserById(claims.ID)
+	if err != nil {
+		c.IndentedJSON(http.StatusBadGateway, gin.H{
+			"statusError": true,
+			"message":     err.Error(),
+		})
+		return
+	}
+	c.IndentedJSON(http.StatusOK, user)
 }

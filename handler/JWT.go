@@ -2,7 +2,6 @@ package handler
 
 import (
 	"errors"
-	"net/http"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -35,17 +34,18 @@ func GenerateAllTokens(userID string) (string, time.Time) {
 	return tokenString, expirationTime
 }
 
+type userToken struct {
+	Token string `json:"token"`
+}
+
 func ValidateToken(c *gin.Context) (*Claims, error) {
-	cookie, err := c.Request.Cookie("token")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			return nil, err
-		}
+	var uToken userToken
+	if err := c.BindJSON(&uToken); err != nil {
+		panic(err)
 	}
-	tokenStr := cookie.Value
 	claims := &Claims{}
 
-	tkn, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (interface{}, error) { return JwtKey, nil })
+	tkn, err := jwt.ParseWithClaims(uToken.Token, claims, func(t *jwt.Token) (interface{}, error) { return JwtKey, nil })
 	if err != nil {
 		return nil, err
 	}
