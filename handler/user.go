@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var tokenResult string
+var TokenResult string
 
 func (h *Handler) AddUser(c *gin.Context) {
 	var user entities.User
@@ -39,7 +39,7 @@ func (h *Handler) Login(c *gin.Context) {
 		return
 	}
 	token, expirationTime := GenerateAllTokens(userId)
-	tokenResult = token
+	TokenResult = token
 
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"statusError": false,
@@ -48,8 +48,7 @@ func (h *Handler) Login(c *gin.Context) {
 	})
 }
 func (h *Handler) GetUserById(c *gin.Context) {
-
-	claims, err := ValidateToken(tokenResult, c)
+	claims, err := ValidateToken(TokenResult, c)
 	if err != nil {
 		c.IndentedJSON(http.StatusBadGateway, gin.H{
 			"statusError": true,

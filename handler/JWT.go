@@ -16,7 +16,7 @@ type Claims struct {
 }
 
 func GenerateAllTokens(userID string) (string, time.Time) {
-	expirationTime := time.Now().Add(time.Minute * 5)
+	expirationTime := time.Now().Add(time.Minute * 120)
 
 	claims := &Claims{
 		ID: userID,
@@ -32,10 +32,6 @@ func GenerateAllTokens(userID string) (string, time.Time) {
 		panic(err.Error())
 	}
 	return tokenString, expirationTime
-}
-
-type userToken struct {
-	Token string `json:"token"`
 }
 
 func ValidateToken(token string, c *gin.Context) (*Claims, error) {
