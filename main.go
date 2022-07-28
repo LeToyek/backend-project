@@ -1,21 +1,22 @@
 package main
 
 import (
-	"coin-batam/handler"
-	"coin-batam/repository"
-	"coin-batam/server"
-	"coin-batam/service"
 	"database/sql"
 	"fmt"
+	"project/handler"
+	"project/repository"
+	"project/server"
+	"project/service"
 
 	"github.com/gin-gonic/gin"
+
 	_ "github.com/lib/pq"
 )
 
 const (
 	user      = "postgres"
 	password  = "handoko"
-	dbname    = "coin-batam"
+	dbname    = "project"
 	port      = 5432
 	ssl       = "disable"
 	timeZone  = "Asia/Jakarta"
@@ -31,7 +32,6 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-
 	repository := repository.Repository{
 		DB: db,
 	}
@@ -41,26 +41,11 @@ func main() {
 	handler := handler.Handler{
 		Service: service,
 	}
-
 	router := gin.Default()
-
 	start := server.Server{
 		Router:  router,
 		Handler: &handler,
 	}
-
 	start.StartServer()
-
-	// router.Use(cors.New(cors.Config{
-	// 	AllowOrigins:     []string{"https://localhost:5000/register/"},
-	// 	AllowMethods:     []string{"PUT", "PATCH", "POST"},
-	// 	AllowHeaders:     []string{"Content-Type"},
-	// 	ExposeHeaders:    []string{"Content-Length"},
-	// 	AllowCredentials: true,
-	// 	AllowOriginFunc: func(origin string) bool {
-	// 		return origin == "https://github.com"
-	// 	},
-	// 	MaxAge: 12 * time.Hour,
-	// }))
-	router.Run(localhost)
+	panic(router.Run(localhost))
 }
