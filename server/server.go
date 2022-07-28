@@ -13,7 +13,7 @@ type Server struct {
 
 func (s *Server) StartServer() {
 	s.Router.Use(CORSMiddleware())
-	s.Router.POST("/register", handler.Register)
+	s.Router.POST("/register", handler.Register())
 }
 
 func CORSMiddleware() gin.HandlerFunc {
