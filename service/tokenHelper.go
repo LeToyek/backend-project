@@ -11,7 +11,7 @@ type Credentials struct {
 	jwt.StandardClaims
 }
 
-const SECRET_KEY = "super duper secret omg"
+var SECRET_KEY = []byte("super_duper_secret_omg")
 
 func GenerateTokens(userID string) (signedToken string, signedRefreshToken string, err error) {
 	claims := &Credentials{
@@ -28,14 +28,17 @@ func GenerateTokens(userID string) (signedToken string, signedRefreshToken strin
 		},
 	}
 
-	token, err := jwt.NewWithClaims(jwt.SigningMethodES256, claims).SignedString([]byte(SECRET_KEY))
-	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodES256, refreshClaims).SignedString([]byte(SECRET_KEY))
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokenStr, err := token.SignedString(SECRET_KEY)
 
-	return token, refreshToken, err
+	if err != nil {
+		panic(err)
+	}
+	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString(SECRET_KEY)
+	return tokenStr, refreshToken, err
 }
 
 func ValidateToken(signedToken string) *Credentials {
-
 	token, err := jwt.ParseWithClaims(
 		signedToken,
 		&Credentials{},

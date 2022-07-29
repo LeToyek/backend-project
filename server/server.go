@@ -2,6 +2,7 @@ package server
 
 import (
 	"project/handler"
+	middleware "project/middleware"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,7 +14,10 @@ type Server struct {
 
 func (s *Server) StartServer() {
 	s.Router.Use(CORSMiddleware())
+	s.Router.Use(middleware.Authenticate())
 	s.Router.POST("/register", handler.Register())
+	s.Router.POST("/login", handler.Login())
+	s.Router.GET("/index", s.Handler.TryIndex())
 }
 
 func CORSMiddleware() gin.HandlerFunc {
